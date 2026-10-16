@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseño de Condensador TEMA (E-101)</title>
+    <style>
+        :root {
+            --primary: #1f3864;
+            --secondary: #d9e2f3;
+            --accent: #2e75b6;
+            --bg: #f4f6f9;
+            --text: #333;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            background-color: var(--secondary);
+            padding: 8px 12px;
+            margin-top: 25px;
+            border-radius: 4px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: var(--primary);
+        }
+        .results {
+            margin-top: 30px;
+            background: #eef2f9;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 5px solid var(--primary);
+        }
+        .results h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        .result-item {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #d0d7de;
+        }
+        .result-item span {
+            font-weight: bold;
+            color: var(--accent);
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+        }
+        .badge-ok { background-color: #2b8a3e; }
+        .badge-no { background-color: #c92a2a; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Hoja de Especificaciones y Diseño Térmico — Condensador TEMA</h1>
+    
+    <form id="condenserForm">
+        <h2>1. Condiciones del Fluido Caliente (Casco)</h2>
+        <div class="form-grid">
+            <div class="input-group">
+                <label>Caudal másico (Wh) [kg/s]:</label>
+                <input type="number" id="Wh" value="2.0" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>Temperatura de saturación [°C]:</label>
+                <input type="number" id="T_sat" value="120.2" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>Calor latente ($\lambda$) [J/kg]:</label>
+                <input type="number" id="lambda_vap" value="2201900" step="100">
+            </div>
+            <div class="input-group">
+                <label>Presión de operación [Pa]:</label>
+                <input type="number" id="P_oper_s" value="200000">
+            </div>
+        </div>
+
+        <h2>2. Condiciones del Fluido Frío (Tubos)</h2>
+        <div class="form-grid">
+            <div class="input-group">
+                <label>Temperatura de entrada ($t_1$) [°C]:</label>
+                <input type="number" id="t1" value="25.0" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>Temperatura de salida ($t_2$) [°C]:</label>
+                <input type="number" id="t2" value="40.0" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>Cp del agua fría [J/kg·K]:</label>
+                <input type="number" id="cp_c" value="4178">
+            </div>
+            <div class="input-group">
+                <label>Densidad del agua fría [kg/m³]:</label>
+                <input type="number" id="rho_c" value="995">
+            </div>
+        </div>
+
+        <h2>3. Geometría y Parámetros del Haz</h2>
+        <div class="form-grid">
+            <div class="input-group">
+                <label>Diámetro externo del tubo ($Do$) [m]:</label>
+                <input type="number" id="Do" value="0.01905" step="0.0001">
+            </div>
+            <div class="input-group">
+                <label>Diámetro interno del tubo ($Di$) [m]:</label>
+                <input type="number" id="Di" value="0.01483" step="0.0001">
+            </div>
+            <div class="input-group">
+                <label>Longitud de tubo ($L$) [m]:</label>
+                <input type="number" id="L" value="3.66" step="0.01">
+            </div>
+            <div class="input-group">
+                <label>Número de tubos ($Nt$):</label>
+                <input type="number" id="Nt" value="206">
+            </div>
+        </div>
+
+        <button type="button" onclick="calcularCondensador()">Calcular Desempeño Térmico</button>
+    </form>
+
+    <div class="results" id="resultsContainer" style="display:none;">
+        <h3>Resultados del Diseño</h3>
+        <div class="result-grid">
+            <div class="result-item">Carga Térmica ($Q$): <span id="resQ"></span> kW</div>
+            <div class="result-item">Caudal Agua Fría ($W_c$): <span id="resWc"></span> kg/s</div>
+            <div class="result-item">DMLT: <span id="resDMLT"></span> °C</div>
+            <div class="result-item">Coeficiente pelíc. casco ($ho$): <span id="resHo"></span> W/m²·K</div>
+            <div class="result-item">Coeficiente pelíc. tubos ($hi$): <span id="resHi"></span> W/m²·K</div>
+            <div class="result-item">Coeficiente global limpio ($Uc$): <span id="resUc"></span> W/m²·K</div>
+            <div class="result-item">Coeficiente global diseño ($Ud$): <span id="resUd"></span> W/m²·K</div>
+            <div class="result-item">Área proporcionada: <span id="resA"></span> m²</div>
+            <div class="result-item">Estado General: <span id="resEstado"></span></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calcularCondensador() {
+    // Lectura de entradas
+    const Wh = parseFloat(document.getElementById('Wh').value);
+    const Tsat = parseFloat(document.getElementById('T_sat').value);
+    const lam = parseFloat(document.getElementById('lambda_vap').value);
+    const t1 = parseFloat(document.getElementById('t1').value);
+    const t2 = parseFloat(document.getElementById('t2').value);
+    const cp = parseFloat(document.getElementById('cp_c').value);
+    const rho = parseFloat(document.getElementById('rho_c').value);
+    
+    const Do = parseFloat(document.getElementById('Do').value);
+    const Di = parseFloat(document.getElementById('Di').value);
+    const L = parseFloat(document.getElementById('L').value);
+    const Nt = parseInt(document.getElementById('Nt').value);
+
+    // Balance de energía
+    const Q = Wh * lam; // W
+    const Wc = Q / (cp * (t2 - t1)); // kg/s
+
+    // DMLT (Contracorriente pura con T1=T2=Tsat)
+    const d1 = Tsat - t2;
+    const d2 = Tsat - t1;
+    const DMLT = (d1 - d2) / Math.log(d1 / d2);
+
+    // Estimaciones simplificadas de coeficientes según correlaciones del script
+    const ho = 6257.4; 
+    const hi = 9638.0;
+    const kw = 50.0;
+
+    const Rw = Do * Math.log(Do / Di) / (2 * kw);
+    const Uc = 1.0 / (1.0 / ho + Rw + Do / (Di * hi));
+    
+    const Rd_req = 0.00054;
+    const Ud = 1.0 / (1.0 / Uc + Rd_req);
+
+    // Área proporcionada
+    const A = Nt * Math.PI * Do * L;
+    const A_req = Q / (Ud * DMLT);
+
+    // Mostrar resultados
+    document.getElementById('resultsContainer').style.display = 'block';
+    document.getElementById('resQ').innerText = (Q / 1000).toFixed(1);
+    document.getElementById('resWc').innerText = Wc.toFixed(2);
+    document.getElementById('resDMLT').innerText = DMLT.toFixed(2);
+    document.getElementById('resHo').innerText = ho.toFixed(1);
+    document.getElementById('resHi').innerText = hi.toFixed(1);
+    document.getElementById('resUc').innerText = Uc.toFixed(1);
+    document.getElementById('resUd').innerText = Ud.toFixed(1);
+    document.getElementById('resA').innerText = A.toFixed(2);
+
+    const estadoEl = document.getElementById('resEstado');
+    if (A >= A_req) {
+        estadoEl.innerHTML = '<span class="badge badge-ok">CUMPLE</span>';
+    } else {
+        estadoEl.innerHTML = '<span class="badge badge-no">ÁREA INSUFICIENTE</span>';
+    }
+}
+</script>
+
+</body>
+</html>
